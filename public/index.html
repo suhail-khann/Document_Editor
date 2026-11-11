@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f6f5f1">
+    <title>Ajaia Docs — A little more room to think</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="/" aria-label="Ajaia Docs home">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>ajaia<span class="brand-light"> / docs</span></span>
+        </a>
+
+        <button class="user-switcher" id="user-switcher" type="button" aria-label="Switch account">
+          <span class="avatar" id="profile-avatar">AC</span>
+          <span class="user-copy"><strong id="profile-name">Aria Chen</strong><small>Personal workspace</small></span>
+          <span class="chevron">⌄</span>
+        </button>
+        <div class="account-menu hidden" id="account-menu" role="menu"></div>
+
+        <div class="sidebar-label">YOUR SPACE <span>✦</span></div>
+        <button class="nav-item active" type="button" data-filter="all"><span class="nav-icon">▤</span> All documents</button>
+        <button class="nav-item" type="button" data-filter="owned"><span class="nav-icon">◷</span> My documents</button>
+        <button class="nav-item" type="button" data-filter="shared"><span class="nav-icon">↗</span> Shared with me</button>
+
+        <div class="document-section">
+          <div class="section-heading"><span>RECENT</span><button id="new-document" class="icon-button" type="button" aria-label="Create a document" title="New document">＋</button></div>
+          <div id="document-list" class="document-list"></div>
+        </div>
+
+        <div class="sidebar-bottom">
+          <div class="storage-note"><span class="online-dot"></span><span>Everything saved, together.</span></div>
+          <div class="sidebar-footer">A small space for good work <span>✳</span></div>
+        </div>
+      </aside>
+
+      <main class="main-panel">
+        <header class="topbar">
+          <div class="breadcrumbs"><span>Workspace</span><span class="breadcrumb-divider">/</span><span id="breadcrumb-title">All documents</span></div>
+          <div class="top-actions">
+            <label class="icon-button upload-trigger" for="file-input" title="Import a .txt or .md file" aria-label="Import a file">↑</label>
+            <input id="file-input" type="file" accept=".txt,.md,text/plain,text/markdown" hidden>
+            <button class="share-button" id="share-button" type="button" disabled><span>↗</span> Share</button>
+            <span class="top-avatar" id="top-avatar">AC</span>
+          </div>
+        </header>
+
+        <section class="workspace" id="workspace">
+          <div class="welcome-state" id="welcome-state">
+            <div class="welcome-kicker"><span>✳</span> A LITTLE MORE ROOM TO THINK</div>
+            <h1>Good work starts<br>with a <em>blank page.</em></h1>
+            <p>A calm place to gather your thoughts, shape an idea, and make something better together.</p>
+            <div class="welcome-actions">
+              <button class="primary-button" id="welcome-new" type="button"><span>＋</span> Start a document</button>
+              <label class="secondary-button" for="file-input"><span>↑</span> Import a file</label>
+            </div>
+            <div class="welcome-footnote"><span>✦</span> Your first draft doesn't have to be your last.</div>
+          </div>
+
+          <article class="editor hidden" id="editor">
+            <div class="editor-meta">
+              <div><span class="document-badge" id="document-badge">OWNED</span><span id="document-owner" class="document-owner"></span></div>
+              <span class="save-state" id="save-state"><span class="save-dot"></span> All changes saved</span>
+            </div>
+            <input class="title-input" id="title-input" maxlength="120" aria-label="Document title" placeholder="Untitled document">
+            <div class="editor-subtitle">A shared space for the thoughts that move things forward.</div>
+            <div class="toolbar" role="toolbar" aria-label="Text formatting">
+              <button type="button" data-command="bold" aria-label="Bold" title="Bold (Ctrl+B)"><strong>B</strong></button>
+              <button type="button" data-command="italic" aria-label="Italic" title="Italic (Ctrl+I)"><em>I</em></button>
+              <button type="button" data-command="underline" aria-label="Underline" title="Underline (Ctrl+U)"><u>U</u></button>
+              <span class="toolbar-divider"></span>
+              <select id="format-select" aria-label="Text style">
+                <option value="p">Paragraph</option>
+                <option value="h1">Heading 1</option>
+                <option value="h2">Heading 2</option>
+                <option value="h3">Heading 3</option>
+              </select>
+              <span class="toolbar-divider"></span>
+              <button type="button" data-command="insertUnorderedList" aria-label="Bulleted list" title="Bulleted list">☷</button>
+              <button type="button" data-command="insertOrderedList" aria-label="Numbered list" title="Numbered list">☰</button>
+              <button type="button" data-command="formatBlock" data-value="blockquote" aria-label="Quote" title="Quote">❝</button>
+            </div>
+            <div class="editor-canvas">
+              <div id="content-editor" class="content-editor" contenteditable="true" role="textbox" aria-label="Document content" aria-multiline="true" data-placeholder="Start writing something good..."></div>
+            </div>
+            <div class="editor-footer"><span>Words <strong id="word-count">0</strong></span><span>Just you and your ideas <span class="footer-spark">✳</span></span></div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="share-dialog" class="modal">
+      <form method="dialog" class="modal-close-form"><button class="modal-close" aria-label="Close">×</button></form>
+      <div class="modal-icon">↗</div>
+      <p class="modal-eyebrow">MAKE IT BETTER, TOGETHER</p>
+      <h2>Share this document</h2>
+      <p class="modal-description">Invite a teammate to read and edit this document.</p>
+      <div class="share-existing" id="share-existing"></div>
+      <label class="field-label" for="recipient-select">ADD A TEAMMATE</label>
+      <div class="invite-row"><select id="recipient-select"></select><button id="invite-button" type="button" class="primary-button">Invite</button></div>
+      <p class="share-feedback" id="share-feedback" role="status"></p>
+      <div class="modal-note"><span>✦</span> Only you can manage sharing.</div>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="/app.js" defer></script>
+  </body>
+</html>
