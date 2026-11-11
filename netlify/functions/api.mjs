@@ -72,17 +72,17 @@ export function createNetlifyHandler(options = {}) {
       if (segments.length === 2 && method === "POST") {
         return jsonResponse(201, await service.create(body.userId, body.title));
       }
-      if (segments.length === 4 && segments[2] === "versions" && method === "GET") {
-        return jsonResponse(200, await service.versions(segments[1], url.searchParams.get("userId")));
+      if (segments.length === 4 && segments[3] === "versions" && method === "GET") {
+        return jsonResponse(200, await service.versions(segments[2], url.searchParams.get("userId")));
       }
-      if (segments.length === 6 && segments[2] === "versions" && segments[5] === "restore" && method === "POST") {
-        return jsonResponse(200, await service.restore(segments[1], body.userId, segments[4]));
+      if (segments.length === 6 && segments[3] === "versions" && segments[5] === "restore" && method === "POST") {
+        return jsonResponse(200, await service.restore(segments[2], body.userId, segments[4]));
       }
-      if (segments.length === 4 && segments[2] === "share" && method === "POST") {
-        return jsonResponse(200, await service.share(segments[1], body.userId, body.recipientId));
+      if (segments.length === 4 && segments[3] === "share" && method === "POST") {
+        return jsonResponse(200, await service.share(segments[2], body.userId, body.recipientId));
       }
-      if (segments.length === 5 && segments[2] === "share" && method === "DELETE") {
-        return jsonResponse(200, await service.revoke(segments[1], body.userId, segments[4]));
+      if (segments.length === 5 && segments[3] === "share" && method === "DELETE") {
+        return jsonResponse(200, await service.revoke(segments[2], body.userId, segments[4]));
       }
       if (segments.length === 3 && method === "GET") {
         return jsonResponse(200, await service.get(segments[2], url.searchParams.get("userId")));
