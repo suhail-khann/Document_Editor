@@ -4,6 +4,8 @@
 
 - `README.md` — setup, seeded accounts, supported imports, and known limitations.
 - `ARCHITECTURE.md` — architecture, product priorities, and tradeoffs.
+- `PROJECT_GUIDE.pdf` and `PROJECT_GUIDE.md` — plain-language explanation of the product and implementation.
+- `tools/generate_project_guide.py` — script to regenerate the PDF.
 - `AI_WORKFLOW.md` — tools used, AI contributions, and verification.
 - `WALKTHROUGH_URL.txt` — walkthrough video link.
 - `WALKTHROUGH_SCRIPT.md` — timed outline for the walkthrough.

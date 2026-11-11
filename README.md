@@ -53,3 +53,11 @@ The repository includes a Render Blueprint in `render.yaml`. Sign in to Render, 
 - `.github/workflows/test.yml` — automated test workflow for GitHub pushes and pull requests.
 - `ARCHITECTURE.md` — implementation choices and tradeoffs.
 - `AI_WORKFLOW.md` — AI usage and verification notes.
+- `PROJECT_GUIDE.pdf` and `PROJECT_GUIDE.md` — purpose, features, architecture, API, and implementation walkthrough.
+
+To regenerate the guide PDF after editing its Markdown source, install the optional documentation dependency and run:
+
+```powershell
+python -m pip install reportlab
+python tools/generate_project_guide.py
+```
