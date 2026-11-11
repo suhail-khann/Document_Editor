@@ -1,6 +1,6 @@
 # Walkthrough recording outline (3–5 minutes)
 
-This is a recording checklist, not a video. Record the browser and narrate the steps below, then replace the placeholder in `WALKTHROUGH_URL.txt`.
+Use this outline to guide the 3–5 minute product walkthrough and add the resulting video link to `WALKTHROUGH_URL.txt`.
 
 1. **0:00–0:35 — Product and scope:** introduce Ajaia Docs as a small shared-writing workspace; explain the seeded account switcher.
 2. **0:35–1:30 — Editing:** create a document, rename it, type a paragraph, apply bold and a heading, and show the autosave status.

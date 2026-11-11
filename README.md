@@ -42,7 +42,7 @@ The repository includes a Render Blueprint in `render.yaml`. Sign in to Render, 
 - Storage is a local JSON file intended for a single-instance demo, not concurrent multi-instance deployment.
 - Deployed Render storage is ephemeral unless a persistent disk or managed database is configured.
 - The editor supports a deliberate subset of rich text; it does not provide real-time co-editing, comments, or DOCX/PDF import.
-- A Google Drive folder and recorded walkthrough still need to be created by the submitter. See `SUBMISSION.md` and `WALKTHROUGH_URL.txt`.
+- Add the hosted app, Drive folder, and walkthrough URLs to `SUBMISSION.md` and `WALKTHROUGH_URL.txt` when preparing the final review package.
 
 ## Project map
 
