@@ -32,24 +32,33 @@ Import accepts `.txt` and `.md` files up to 1 MB. Both are imported as editable 
 
 Open **History** to review and restore the last 20 saved versions. Restoring a version saves the current draft as a new version first.
 
-## Deploy a review build
+## Deploy to Netlify
 
-The repository includes a Render Blueprint in `render.yaml`. Sign in to Render, create a new Blueprint instance from `suhail-khann/Document_Editor`, and select the `piush` branch. Render will build with `npm ci`, start with `npm start`, and use `/api/users` as its health check. Free instances can sleep when idle and their local file storage is ephemeral; this configuration is for a reviewer demo, not durable production storage. For durable deployed documents, attach a persistent disk or move the JSON store to a managed database before launch.
+The site is configured for Netlify in `netlify.toml`: Netlify installs dependencies with `npm ci`, publishes the `public/` folder, and bundles the API function from `netlify/functions/`. The API function handles `/api/*` requests and stores documents in the site-wide Netlify Blobs store named `ajaia-documents`; this avoids relying on the ephemeral filesystem used by serverless functions.
+
+To redeploy, connect the GitHub repository `suhail-khann/Document_Editor` to Netlify and use the `piush` branch. Keep the base directory at the repository root so Netlify can read `netlify.toml`, `package.json`, and the function source. Netlify Blobs must be available for the site. After deployment, check the deploy's Functions section and verify `https://<your-site>.netlify.app/api/users` returns the three demo users.
+
+If Netlify's **Build settings** UI has custom overrides, clear the base directory and let `netlify.toml` control the publish and functions directories. In **Build & deploy → Branches**, make sure the production branch is `piush`, then trigger a fresh deploy. A successful static publish should serve the home page; `/api/users` should return JSON rather than a 404. If either URL still returns 404, inspect the latest deploy log and confirm the deploy is using this repository and branch.
+
+The Render Blueprint in `render.yaml` remains available for a standalone Node server, but Netlify should use the Netlify Function and Blobs path above.
 
 ## Scope and known limitations
 
 - Sharing is simulated with three seeded accounts; there is no password, identity provider, or production access control.
-- Storage is a local JSON file intended for a single-instance demo, not concurrent multi-instance deployment.
-- Deployed Render storage is ephemeral unless a persistent disk or managed database is configured.
+- Local development stores data in a JSON file. Netlify deployments use Netlify Blobs.
+- The Netlify demo uses seeded identities, not real authentication or production access control.
 - The editor supports a deliberate subset of rich text; it does not provide real-time co-editing, comments, or DOCX/PDF import.
 - Add the hosted app, Drive folder, and walkthrough URLs to `SUBMISSION.md` and `WALKTHROUGH_URL.txt` when preparing the final review package.
 
 ## Project map
 
-- `server.js` — Express API, validation, access checks, HTML sanitization, JSON persistence.
+- `server.js` — local Express server and JSON-file repository.
+- `document-service.js` — shared document rules used by the local API and Netlify function.
+- `netlify/functions/api.mjs` — Netlify serverless API backed by Netlify Blobs.
+- `netlify.toml` — Netlify build, publish, and function configuration.
 - `public/` — responsive editor UI and client-side interactions.
-- `test/server.test.js` — API integration tests for persistence, sanitization, and sharing access.
-- `render.yaml` — free Render Blueprint for reviewer deployment.
+- `test/server.test.js` and `test/netlify-function.test.js` — local and deployed API integration tests.
+- `render.yaml` — optional Render Blueprint for reviewer deployment.
 - `.github/workflows/test.yml` — automated test workflow for GitHub pushes and pull requests.
 - `ARCHITECTURE.md` — implementation choices and tradeoffs.
 - `AI_WORKFLOW.md` — AI usage and verification notes.

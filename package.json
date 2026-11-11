@@ -5,9 +5,10 @@
   "description": "A lightweight collaborative document editor",
   "scripts": {
     "start": "node server.js",
-    "test": "node --test test/server.test.js"
+    "test": "node --test test/server.test.js test/netlify-function.test.js"
   },
   "dependencies": {
+    "@netlify/blobs": "^11.1.9",
     "express": "^5.1.0",
     "sanitize-html": "^2.17.0"
   }

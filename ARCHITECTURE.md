@@ -7,8 +7,9 @@ A focused shared-writing workflow: open or create a document, edit and format it
 ## Implementation
 
 - **UI:** semantic HTML, responsive CSS, and browser-native JavaScript; `contenteditable` supports a small formatting toolbar without a large editor dependency.
-- **API:** Express serves the UI and exposes document, user, and sharing endpoints.
-- **Persistence:** a local JSON file stores documents, owners, collaborators, and timestamps. Synchronous writes are atomic via a temporary file and rename, appropriate for this small, single-process exercise.
+- **API:** a shared document service powers the Express local API and the deployed Netlify Function.
+- **Persistence:** a local JSON file stores documents during development. A deployed Netlify function persists the same document service's collection in a site-wide Netlify Blobs store.
+- **Netlify deployment:** `netlify.toml` publishes `public/` and configures a `/api/*` serverless function. An explicit publish directory is essential because the website entry point is in `public/`.
 - **Version history:** each changed save stores the previous title and sanitized content; the newest 20 snapshots are kept. Restoring a version first snapshots the current draft, so a restore can be undone.
 - **Sharing:** three seeded demo identities stand in for authentication. Owners can grant or revoke editor access; owners and collaborators can read and edit; other users receive no document data.
 - **Import:** `.txt` and `.md` contents are escaped and inserted as paragraphs. The API independently sanitizes saved HTML to an explicit formatting allowlist.
@@ -19,4 +20,4 @@ I prioritized the end-to-end loop—edit, save, reopen, share, import, and recov
 
 ## Verification
 
-`npm test` exercises document creation and reopening, formatting sanitization, collaborator editing, shared-document visibility, version history and restore, invalid users, and private-document access. Manual browser checks also covered formatting controls, account switching, sharing, `.md` import, reload persistence, and saving while quickly switching documents.
+`npm test` exercises document creation and reopening, formatting sanitization, collaborator editing, shared-document visibility, version history and restore, invalid users, private-document access, and the Netlify function API with an in-memory store adapter. Manual browser checks also covered formatting controls, account switching, sharing, `.md` import, reload persistence, and saving while quickly switching documents.
