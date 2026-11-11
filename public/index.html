@@ -47,6 +47,7 @@
           <div class="top-actions">
             <label class="icon-button upload-trigger" for="file-input" title="Import a .txt or .md file" aria-label="Import a file">↑</label>
             <input id="file-input" type="file" accept=".txt,.md,text/plain,text/markdown" hidden>
+            <button class="history-button" id="history-button" type="button" disabled><span>↶</span> History</button>
             <button class="share-button" id="share-button" type="button" disabled><span>↗</span> Share</button>
             <span class="top-avatar" id="top-avatar">AC</span>
           </div>
@@ -107,6 +108,17 @@
       <div class="invite-row"><select id="recipient-select"></select><button id="invite-button" type="button" class="primary-button">Invite</button></div>
       <p class="share-feedback" id="share-feedback" role="status"></p>
       <div class="modal-note"><span>✦</span> Only you can manage sharing.</div>
+    </dialog>
+
+    <dialog id="history-dialog" class="modal history-modal">
+      <form method="dialog" class="modal-close-form"><button class="modal-close" aria-label="Close">×</button></form>
+      <div class="modal-icon">↶</div>
+      <p class="modal-eyebrow">YOUR WORK, ALONG THE WAY</p>
+      <h2>Document history</h2>
+      <p class="modal-description">The last 20 saved versions are kept. Restoring a version saves the current draft first.</p>
+      <div class="version-list" id="version-list"></div>
+      <p class="share-feedback" id="history-feedback" role="status"></p>
+      <div class="modal-note"><span>✦</span> Versions are visible to document collaborators.</div>
     </dialog>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>

@@ -9,6 +9,7 @@ const USERS = [
   { id: "morgan", name: "Morgan Lee", email: "morgan@ajaia.test", initials: "ML", color: "#52716a" },
   { id: "sam", name: "Sam Rivera", email: "sam@ajaia.test", initials: "SR", color: "#7963a7" }
 ];
+const MAX_VERSIONS = 20;
 
 const initialDocuments = () => {
   const now = new Date().toISOString();
@@ -57,6 +58,17 @@ function createApp(options = {}) {
   const findUser = (id) => USERS.find((user) => user.id === id);
   const hasAccess = (document, userId) =>
     document.ownerId === userId || document.sharedWith.some((share) => share.userId === userId);
+  const recordVersion = (document, createdAt) => {
+    const versions = Array.isArray(document.versions) ? document.versions : [];
+    versions.push({
+      id: crypto.randomUUID(),
+      title: document.title,
+      content: document.content,
+      userId: document.updatedBy || document.ownerId,
+      createdAt
+    });
+    document.versions = versions.slice(-MAX_VERSIONS);
+  };
 
   const app = express();
   app.use(express.json({ limit: "6mb" }));
@@ -89,7 +101,9 @@ function createApp(options = {}) {
       title: title.trim(),
       content: "<p><br></p>",
       ownerId: userId,
+      updatedBy: userId,
       sharedWith: [],
+      versions: [],
       createdAt: now,
       updatedAt: now
     };
@@ -111,6 +125,18 @@ function createApp(options = {}) {
     });
   });
 
+  app.get("/api/documents/:id/versions", (req, res) => {
+    const { userId } = req.query;
+    const document = readDocuments().find((item) => item.id === req.params.id);
+    if (!findUser(userId)) return res.status(400).json({ error: "Choose a valid user." });
+    if (!document || !hasAccess(document, userId)) return res.status(404).json({ error: "Document not found." });
+    const versions = (Array.isArray(document.versions) ? document.versions : [])
+      .slice()
+      .reverse()
+      .map((version) => ({ ...version, userName: findUser(version.userId)?.name || "Former collaborator" }));
+    return res.json(versions);
+  });
+
   app.put("/api/documents/:id", (req, res) => {
     const { userId, title, content } = req.body || {};
     if (!findUser(userId)) return res.status(400).json({ error: "Choose a valid user." });
@@ -123,9 +149,35 @@ function createApp(options = {}) {
     if (typeof content !== "string" || content.length > 5_500_000) {
       return res.status(400).json({ error: "Document content must be under 5.5 MB." });
     }
-    document.title = title.trim();
-    document.content = sanitizeContent(content);
-    document.updatedAt = new Date().toISOString();
+    const nextTitle = title.trim();
+    const nextContent = sanitizeContent(content);
+    const now = new Date().toISOString();
+    if (document.title !== nextTitle || document.content !== nextContent) {
+      recordVersion(document, now);
+      document.title = nextTitle;
+      document.content = nextContent;
+      document.updatedBy = userId;
+      document.updatedAt = now;
+    }
+    writeDocuments(documents);
+    return res.json({ ...document, ownerName: findUser(document.ownerId).name, access: document.ownerId === userId ? "owned" : "shared" });
+  });
+
+  app.post("/api/documents/:id/versions/:versionId/restore", (req, res) => {
+    const { userId } = req.body || {};
+    if (!findUser(userId)) return res.status(400).json({ error: "Choose a valid user." });
+    const documents = readDocuments();
+    const document = documents.find((item) => item.id === req.params.id);
+    if (!document || !hasAccess(document, userId)) return res.status(404).json({ error: "Document not found." });
+    const versions = Array.isArray(document.versions) ? document.versions : [];
+    const version = versions.find((item) => item.id === req.params.versionId);
+    if (!version) return res.status(404).json({ error: "Document version not found." });
+    const now = new Date().toISOString();
+    recordVersion(document, now);
+    document.title = version.title;
+    document.content = sanitizeContent(version.content);
+    document.updatedBy = userId;
+    document.updatedAt = now;
     writeDocuments(documents);
     return res.json({ ...document, ownerName: findUser(document.ownerId).name, access: document.ownerId === userId ? "owned" : "shared" });
   });

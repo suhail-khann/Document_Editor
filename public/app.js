@@ -121,6 +121,7 @@ function renderActiveDocument() {
   el("welcome-state").classList.toggle("hidden", Boolean(item));
   el("editor").classList.toggle("hidden", !item);
   el("share-button").disabled = !item || item.ownerId !== state.userId;
+  el("history-button").disabled = !item;
   if (!item) {
     el("breadcrumb-title").textContent = state.filter === "all" ? "All documents" : state.filter === "owned" ? "My documents" : "Shared with me";
     renderDocuments();
@@ -229,6 +230,71 @@ async function openShareDialog() {
   el("share-dialog").showModal();
 }
 
+async function openHistoryDialog() {
+  const item = activeDocument();
+  if (!item) return;
+  el("history-feedback").textContent = "";
+  el("version-list").replaceChildren();
+  el("version-list").textContent = "Loading saved versions…";
+  el("history-dialog").showModal();
+  try {
+    const versions = await api(`/api/documents/${encodeURIComponent(item.id)}/versions?userId=${encodeURIComponent(state.userId)}`);
+    renderHistory(versions, item.id);
+  } catch (error) {
+    el("version-list").replaceChildren();
+    el("history-feedback").textContent = error.message;
+  }
+}
+
+function renderHistory(versions, documentId) {
+  const list = el("version-list");
+  list.replaceChildren();
+  if (!versions.length) {
+    const empty = document.createElement("p");
+    empty.className = "history-empty";
+    empty.textContent = "Your next edit will create the first saved version.";
+    list.append(empty);
+    return;
+  }
+  versions.forEach((version) => {
+    const row = document.createElement("article");
+    row.className = "version-card";
+    const details = document.createElement("div");
+    details.className = "version-details";
+    const title = document.createElement("strong");
+    title.className = "version-title";
+    title.textContent = version.title;
+    const byline = document.createElement("small");
+    byline.textContent = `${version.userName} · ${new Date(version.createdAt).toLocaleString()}`;
+    const preview = document.createElement("p");
+    preview.className = "version-preview";
+    preview.textContent = version.content.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim() || "An empty draft";
+    details.append(title, byline, preview);
+    const restore = document.createElement("button");
+    restore.type = "button";
+    restore.className = "restore-button";
+    restore.textContent = "Restore";
+    restore.addEventListener("click", async () => {
+      restore.disabled = true;
+      try {
+        const restored = await api(`/api/documents/${encodeURIComponent(documentId)}/versions/${encodeURIComponent(version.id)}/restore`, {
+          method: "POST",
+          body: JSON.stringify({ userId: state.userId })
+        });
+        state.documents = state.documents.map((item) => item.id === restored.id ? restored : item);
+        renderActiveDocument();
+        el("history-dialog").close();
+        showToast("Version restored. Your previous draft is in history.");
+      } catch (error) {
+        restore.disabled = false;
+        el("history-feedback").textContent = error.message;
+      }
+    });
+    row.append(details, restore);
+    list.append(row);
+  });
+}
+
 function renderShareDialog(item) {
   const existing = el("share-existing");
   existing.replaceChildren();
@@ -314,6 +380,7 @@ function initialize() {
   el("content-editor").addEventListener("input", queueSave);
   el("content-editor").addEventListener("keyup", updateWordCount);
   el("share-button").addEventListener("click", openShareDialog);
+  el("history-button").addEventListener("click", openHistoryDialog);
   el("invite-button").addEventListener("click", async () => {
     const item = activeDocument();
     const recipientId = el("recipient-select").value;

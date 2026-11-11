@@ -1,1 +1,1 @@
-Not recorded. A 3–5 minute walkthrough video requires a recording and hosting account, which are not available in this workspace.
+Not recorded yet. Use WALKTHROUGH_SCRIPT.md to record and upload a 3–5 minute walkthrough, then replace this line with its unlisted video URL.

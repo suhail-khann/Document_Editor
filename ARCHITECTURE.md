@@ -9,13 +9,14 @@ A focused shared-writing workflow: open or create a document, edit and format it
 - **UI:** semantic HTML, responsive CSS, and browser-native JavaScript; `contenteditable` supports a small formatting toolbar without a large editor dependency.
 - **API:** Express serves the UI and exposes document, user, and sharing endpoints.
 - **Persistence:** a local JSON file stores documents, owners, collaborators, and timestamps. Synchronous writes are atomic via a temporary file and rename, appropriate for this small, single-process exercise.
+- **Version history:** each changed save stores the previous title and sanitized content; the newest 20 snapshots are kept. Restoring a version first snapshots the current draft, so a restore can be undone.
 - **Sharing:** three seeded demo identities stand in for authentication. Owners can grant or revoke editor access; owners and collaborators can read and edit; other users receive no document data.
 - **Import:** `.txt` and `.md` contents are escaped and inserted as paragraphs. The API independently sanitizes saved HTML to an explicit formatting allowlist.
 
 ## Priorities and tradeoffs
 
-I prioritized the end-to-end loop—edit, save, reopen, share, and import—over live collaboration, a heavy editor framework, and infrastructure that requires service credentials. The no-build frontend keeps setup quick and makes the app easy to inspect. A JSON store avoids external services but is intentionally not a production database; replacing it with SQLite or Postgres and adding real authentication would be the first deployment-hardening steps.
+I prioritized the end-to-end loop—edit, save, reopen, share, import, and recover a prior draft—over live collaboration, a heavy editor framework, and infrastructure that requires service credentials. The no-build frontend keeps setup quick and makes the app easy to inspect. A JSON store avoids external services but is intentionally not a production database; replacing it with SQLite or Postgres and adding real authentication would be the first deployment-hardening steps.
 
 ## Verification
 
-`npm test` exercises document creation and reopening, formatting sanitization, collaborator editing, shared-document visibility, invalid users, and private-document access. Manual browser checks also covered formatting controls, account switching, sharing, `.md` import, reload persistence, and saving while quickly switching documents.
+`npm test` exercises document creation and reopening, formatting sanitization, collaborator editing, shared-document visibility, version history and restore, invalid users, and private-document access. Manual browser checks also covered formatting controls, account switching, sharing, `.md` import, reload persistence, and saving while quickly switching documents.

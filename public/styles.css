@@ -56,10 +56,11 @@ button { color: inherit; }
 .breadcrumb-divider { color: #c2c0b9; }
 .top-actions { display: flex; align-items: center; gap: 13px; }
 .top-avatar { width: 29px; height: 29px; border-radius: 50%; background: #e4ece5; color: #486250; }
-.share-button { border: 1px solid #dcd9d0; background: #fffefa; border-radius: 7px; padding: 7px 12px; display: flex; align-items: center; gap: 7px; font-size: 11px; cursor: pointer; }
+.share-button, .history-button { border: 1px solid #dcd9d0; background: #fffefa; border-radius: 7px; padding: 7px 12px; display: flex; align-items: center; gap: 7px; font-size: 11px; cursor: pointer; }
 .share-button:disabled { opacity: .43; cursor: default; }
-.share-button:not(:disabled):hover { border-color: #9fac9d; }
-.share-button span { font-size: 14px; }
+.share-button:not(:disabled):hover, .history-button:not(:disabled):hover { border-color: #9fac9d; }
+.share-button span, .history-button span { font-size: 14px; }
+.history-button:disabled { opacity: .43; cursor: default; }
 .upload-trigger { border: 1px solid transparent; font-size: 16px; }
 .workspace { flex: 1; position: relative; overflow: auto; display: grid; place-items: center; padding: 54px 7vw; }
 .welcome-state { max-width: 540px; width: 100%; transform: translateY(-15px); }
@@ -135,6 +136,17 @@ button { color: inherit; }
 .share-feedback { min-height: 14px; color: #a14c3a; font-size: 10px; margin: 8px 0; }
 .modal-note { color: #9a988f; font-size: 9px; padding-top: 13px; border-top: 1px solid var(--line); }
 .modal-note span { color: #bb986d; margin-right: 4px; }
+.history-modal { width: min(520px, calc(100vw - 32px)); }
+.version-list { display: grid; gap: 8px; max-height: min(47vh, 360px); overflow: auto; margin: 15px 0; }
+.version-card { display: flex; align-items: center; gap: 13px; padding: 11px; border: 1px solid #ece9e1; border-radius: 8px; background: #fffefa; }
+.version-details { min-width: 0; flex: 1; display: grid; gap: 4px; }
+.version-title { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 11px; font-weight: 600; }
+.version-details small { color: #99978f; font-size: 9px; }
+.version-preview { color: #77766f; font-size: 10px; line-height: 1.5; margin: 2px 0 0; overflow-wrap: anywhere; }
+.restore-button { flex: 0 0 auto; border: 1px solid #dedbd2; border-radius: 6px; background: #f9f8f4; color: #596e5f; padding: 7px 9px; font-size: 9px; font-weight: 600; cursor: pointer; }
+.restore-button:hover { border-color: #9fac9d; background: #f1f3ed; }
+.restore-button:disabled { opacity: .5; cursor: wait; }
+.history-empty { color: #88867f; font-size: 11px; padding: 10px 0; }
 
 @media (max-width: 800px) {
   .sidebar { width: 225px; flex-basis: 225px; }
