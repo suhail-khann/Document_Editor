@@ -1,9 +1,11 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const express = require("express");
+const sanitizeHtml = require("sanitize-html");
 const {
   createDocumentService,
   createInitialDocuments,
+  sanitizeContent,
   ServiceError,
   USERS
 } = require("./document-service");
@@ -28,7 +30,7 @@ function createFileRepository(dataFile) {
 function createApp(options = {}) {
   const dataFile = options.dataFile || path.join(__dirname, "data", "documents.json");
   const repository = options.repository || createFileRepository(dataFile);
-  const service = createDocumentService(repository);
+  const service = createDocumentService(repository, sanitizeHtml);
   const app = express();
   app.use(express.json({ limit: "6mb" }));
 
@@ -118,4 +120,4 @@ if (require.main === module) {
   createApp().listen(port, () => console.log(`Ajaia Docs is ready at http://localhost:${port}`));
 }
 
-module.exports = { createApp, createFileRepository, ...require("./document-service") };
+module.exports = { createApp, createFileRepository, sanitizeContent, ...require("./document-service") };

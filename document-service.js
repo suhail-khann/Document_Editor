@@ -1,5 +1,4 @@
 const crypto = require("node:crypto");
-const sanitizeHtml = require("sanitize-html");
 
 const USERS = [
   { id: "aria", name: "Aria Chen", email: "aria@ajaia.test", initials: "AC", color: "#b25a3c" },
@@ -32,7 +31,7 @@ function createInitialDocuments() {
   ];
 }
 
-function sanitizeContent(content) {
+function sanitizeContent(content, sanitizeHtml) {
   return sanitizeHtml(content, {
     allowedTags: ["p", "br", "div", "strong", "b", "em", "i", "u", "h1", "h2", "h3", "ul", "ol", "li", "blockquote"],
     allowedAttributes: {},
@@ -47,7 +46,7 @@ class ServiceError extends Error {
   }
 }
 
-function createDocumentService(repository) {
+function createDocumentService(repository, sanitizeHtml) {
   const findUser = (id) => USERS.find((user) => user.id === id);
   const requireUser = (id, message = "Choose a valid user.") => {
     const user = findUser(id);
@@ -128,7 +127,7 @@ function createDocumentService(repository) {
         throw new ServiceError(400, "Document content must be under 5.5 MB.");
       }
       const nextTitle = title.trim();
-      const nextContent = sanitizeContent(content);
+      const nextContent = sanitizeContent(content, sanitizeHtml);
       const now = new Date().toISOString();
       if (document.title !== nextTitle || document.content !== nextContent) {
         recordVersion(document, now);
@@ -199,7 +198,7 @@ function createDocumentService(repository) {
       const now = new Date().toISOString();
       recordVersion(document, now);
       document.title = version.title;
-      document.content = sanitizeContent(version.content);
+      document.content = sanitizeContent(version.content, sanitizeHtml);
       document.updatedBy = userId;
       document.updatedAt = now;
       await repository.writeDocuments(documents);

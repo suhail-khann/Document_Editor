@@ -1,4 +1,5 @@
 import { getStore } from "@netlify/blobs";
+import sanitizeHtml from "sanitize-html";
 import documentServiceModule from "../../document-service.js";
 
 const { createDocumentService, createInitialDocuments, ServiceError, USERS } = documentServiceModule;
@@ -60,7 +61,7 @@ export function createNetlifyHandler(options = {}) {
         return jsonResponse(404, { error: "API route not found." });
       }
 
-      const service = createDocumentService(createBlobRepository(resolveStore()));
+      const service = createDocumentService(createBlobRepository(resolveStore()), sanitizeHtml);
       const body = method === "GET" ? {} : await requestBody(request);
 
       if (segments.length === 2 && method === "GET") {
