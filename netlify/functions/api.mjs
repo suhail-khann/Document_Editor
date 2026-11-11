@@ -49,7 +49,8 @@ async function requestBody(request) {
 }
 
 export function createNetlifyHandler(options = {}) {
-  const resolveStore = options.getStore || (() => getStore(STORE_NAME));
+  const resolveStore = () =>
+    (options.getStore || getStore)(STORE_NAME, { consistency: "strong" });
 
   return async function handler(request) {
     try {

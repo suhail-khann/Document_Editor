@@ -5,17 +5,21 @@ test("Netlify function serves users and keeps document edits in its persistent s
   const { createNetlifyHandler } = await import("../netlify/functions/api.mjs");
   let documents = null;
   const handler = createNetlifyHandler({
-    getStore: () => ({
-      async get(_key, options) {
-        assert.equal(options.type, "json");
-        return documents;
-      },
-      async setJSON(_key, value, options = {}) {
-        if (options.onlyIfNew && documents) return { modified: false };
-        documents = structuredClone(value);
-        return { modified: true };
-      }
-    })
+    getStore(name, options) {
+      assert.equal(name, "ajaia-documents");
+      assert.equal(options.consistency, "strong");
+      return {
+        async get(_key, getOptions) {
+          assert.equal(getOptions.type, "json");
+          return documents;
+        },
+        async setJSON(_key, value, setOptions = {}) {
+          if (setOptions.onlyIfNew && documents) return { modified: false };
+          documents = structuredClone(value);
+          return { modified: true };
+        }
+      };
+    }
   });
 
   const users = await handler(new Request("https://example.netlify.app/api/users"));
@@ -98,14 +102,18 @@ test("Netlify function serves users and keeps document edits in its persistent s
 test("Netlify function reports invalid users and malformed JSON as client errors", async () => {
   const { createNetlifyHandler } = await import("../netlify/functions/api.mjs");
   const handler = createNetlifyHandler({
-    getStore: () => ({
-      async get() {
-        return [];
-      },
-      async setJSON() {
-        return { modified: true };
-      }
-    })
+    getStore(name, options) {
+      assert.equal(name, "ajaia-documents");
+      assert.equal(options.consistency, "strong");
+      return {
+        async get() {
+          return [];
+        },
+        async setJSON() {
+          return { modified: true };
+        }
+      };
+    }
   });
 
   const invalidUser = await handler(new Request("https://example.netlify.app/api/documents?userId=unknown"));

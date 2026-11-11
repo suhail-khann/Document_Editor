@@ -34,7 +34,7 @@ Open **History** to review and restore the last 20 saved versions. Restoring a v
 
 ## Deploy to Netlify
 
-The site is configured for Netlify in `netlify.toml`: Netlify installs dependencies with `npm ci` on Node.js 24, publishes the `public/` folder, and bundles the API function from `netlify/functions/`. The API function handles `/api/*` requests and stores documents in the site-wide Netlify Blobs store named `ajaia-documents`; this avoids relying on the ephemeral filesystem used by serverless functions. Server-side HTML sanitization uses a CommonJS-compatible package to behave consistently across local Express and Netlify Functions.
+The site is configured for Netlify in `netlify.toml`: Netlify installs dependencies with `npm ci` on Node.js 24, publishes the `public/` folder, and bundles the API function from `netlify/functions/`. The API function handles `/api/*` requests and stores documents in the site-wide Netlify Blobs store named `ajaia-documents` using strong consistency, so consecutive edits and sharing changes are visible immediately. Server-side HTML sanitization uses a CommonJS-compatible package to behave consistently across local Express and Netlify Functions.
 
 To redeploy, connect the GitHub repository `suhail-khann/Document_Editor` to Netlify and use the `piush` branch. Keep the base directory at the repository root so Netlify can read `netlify.toml`, `package.json`, and the function source. Netlify Blobs must be available for the site. After deployment, check the deploy's Functions section and verify `https://<your-site>.netlify.app/api/users` returns the three demo users.
 

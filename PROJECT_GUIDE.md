@@ -92,7 +92,7 @@ For Netlify, connect the repository's `piush` branch with the repository root as
 
 A document includes an identifier, title, HTML content, owner ID, collaborator list, created and updated times, last editor ID, and a bounded list of prior versions. The initial document collection includes one Aria-owned document and one Morgan-owned document shared with Aria. Local development persists that collection in `data/documents.json`; Netlify initializes and persists it in the site's `ajaia-documents` Blobs store.
 
-Local JSON writes go to a temporary file and are renamed into place. Netlify Blobs persists data across function invocations and deploys. This is still a small demo store, not a relational database with transaction guarantees or a production concurrency strategy.
+Local JSON writes go to a temporary file and are renamed into place. Netlify Blobs persists data across function invocations and deploys. The function explicitly requests strong consistency so a save is visible to the next read, including an immediate reopen or share action. This is still a small demo store, not a relational database with transaction guarantees or a production concurrency strategy.
 
 ## API map
 

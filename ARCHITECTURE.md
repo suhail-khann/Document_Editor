@@ -8,7 +8,7 @@ A focused shared-writing workflow: open or create a document, edit and format it
 
 - **UI:** semantic HTML, responsive CSS, and browser-native JavaScript; `contenteditable` supports a small formatting toolbar without a large editor dependency.
 - **API:** a shared document service powers the Express local API and the deployed Netlify Function.
-- **Persistence:** a local JSON file stores documents during development. A deployed Netlify function persists the same document service's collection in a site-wide Netlify Blobs store.
+- **Persistence:** a local JSON file stores documents during development. The deployed Netlify function persists the same document service's collection in a site-wide Netlify Blobs store with strong consistency, so saves and sharing changes are visible to the next request.
 - **Netlify deployment:** `netlify.toml` publishes `public/` and configures a `/api/*` serverless function. An explicit publish directory is essential because the website entry point is in `public/`.
 - **Version history:** each changed save stores the previous title and sanitized content; the newest 20 snapshots are kept. Restoring a version first snapshots the current draft, so a restore can be undone.
 - **Sharing:** three seeded demo identities stand in for authentication. Owners can grant or revoke editor access; owners and collaborators can read and edit; other users receive no document data.
