@@ -40,6 +40,8 @@ To redeploy, connect the GitHub repository `suhail-khann/Document_Editor` to Net
 
 If Netlify's **Build settings** UI has custom overrides, clear the base directory and let `netlify.toml` control the publish and functions directories. In **Build & deploy → Branches**, make sure the production branch is `piush`, then trigger a fresh deploy. A successful static publish should serve the home page; `/api/users` should return JSON rather than a 404. If either URL still returns 404, inspect the latest deploy log and confirm the deploy is using this repository and branch.
 
+If the page loads but `/api/users` returns a `502` mentioning `ERR_REQUIRE_ESM`, open **Site configuration → Environment variables** and set `AWS_LAMBDA_JS_RUNTIME` to `nodejs24.x` for the Functions scope (or remove an older override). Redeploy after changing it. The `sanitize-html` release used here requires Node.js 22.12 or newer; Node 24 is selected in `netlify.toml` for the build and function runtime.
+
 The Render Blueprint in `render.yaml` remains available for a standalone Node server, but Netlify should use the Netlify Function and Blobs path above.
 
 ## Scope and known limitations

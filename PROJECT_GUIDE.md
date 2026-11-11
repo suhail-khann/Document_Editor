@@ -86,7 +86,7 @@ The editor uses the browser's `contenteditable` element and formatting commands 
 
 `netlify.toml` explicitly tells Netlify to use Node.js 24, publish the `public/` directory, and bundle the function from `netlify/functions/`. Without the publish configuration, the HTML entry point is not at Netlify's default site root and the site may show a 404. Node.js 24 is needed by the current sanitizer/parser dependency. Netlify Blobs provides the deployed document store; the function filesystem is not used for persistence.
 
-For Netlify, connect the repository's `piush` branch with the repository root as the base directory. Clear conflicting manual build overrides, then redeploy. The root page should serve the editor; `/api/users` should return the seeded user list. Netlify deployments can be checked in the Deploy log and Functions list.
+For Netlify, connect the repository's `piush` branch with the repository root as the base directory. Clear conflicting manual build overrides, then redeploy. The root page should serve the editor; `/api/users` should return the seeded user list. If the function reports `ERR_REQUIRE_ESM`, set Netlify's Functions environment variable `AWS_LAMBDA_JS_RUNTIME=nodejs24.x` and redeploy. Netlify deployments can be checked in the Deploy log and Functions list.
 
 ### Stored document data
 
