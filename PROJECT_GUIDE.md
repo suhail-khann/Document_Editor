@@ -84,9 +84,9 @@ The editor uses the browser's `contenteditable` element and formatting commands 
 
 `document-service.js` contains the shared document operations and access rules. In local development, `server.js` serves the static frontend and Express API. On Netlify, `netlify/functions/api.mjs` handles `/api/*` requests without a long-running server. It validates the demo user, checks document access, and applies the same title, content, and HTML sanitization rules.
 
-`netlify.toml` explicitly tells Netlify to use Node.js 24, publish the `public/` directory, and bundle the function from `netlify/functions/`. Without the publish configuration, the HTML entry point is not at Netlify's default site root and the site may show a 404. Node.js 24 is needed by the current sanitizer/parser dependency. Netlify Blobs provides the deployed document store; the function filesystem is not used for persistence.
+`netlify.toml` explicitly tells Netlify to use Node.js 24, publish the `public/` directory, and bundle the function from `netlify/functions/`. Without the publish configuration, the HTML entry point is not at Netlify's default site root and the site may show a 404. The server-side HTML sanitizer uses a CommonJS-compatible package so it works consistently in the local Express server and Netlify Function. Netlify Blobs provides the deployed document store; the function filesystem is not used for persistence.
 
-For Netlify, connect the repository's `piush` branch with the repository root as the base directory. Clear conflicting manual build overrides, then redeploy. The root page should serve the editor; `/api/users` should return the seeded user list. If the function reports `ERR_REQUIRE_ESM`, set Netlify's Functions environment variable `AWS_LAMBDA_JS_RUNTIME=nodejs24.x` and redeploy. Netlify deployments can be checked in the Deploy log and Functions list.
+For Netlify, connect the repository's `piush` branch with the repository root as the base directory. Clear conflicting manual build overrides, then redeploy. The root page should serve the editor; `/api/users` should return the seeded user list. The runtime override `AWS_LAMBDA_JS_RUNTIME=nodejs24.x` is managed through Netlify's UI, CLI, or API rather than `netlify.toml`. Netlify deployments can be checked in the Deploy log and Functions list.
 
 ### Stored document data
 

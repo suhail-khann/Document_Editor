@@ -1,6 +1,6 @@
 import { getStore } from "@netlify/blobs";
-import sanitizeHtml from "sanitize-html";
 import documentServiceModule from "../../document-service.js";
+import sanitizeHtml from "../../sanitize-content.js";
 
 const { createDocumentService, createInitialDocuments, ServiceError, USERS } = documentServiceModule;
 const STORE_NAME = "ajaia-documents";

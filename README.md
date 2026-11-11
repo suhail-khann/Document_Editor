@@ -34,13 +34,13 @@ Open **History** to review and restore the last 20 saved versions. Restoring a v
 
 ## Deploy to Netlify
 
-The site is configured for Netlify in `netlify.toml`: Netlify installs dependencies with `npm ci` on Node.js 24, publishes the `public/` folder, and bundles the API function from `netlify/functions/`. The API function handles `/api/*` requests and stores documents in the site-wide Netlify Blobs store named `ajaia-documents`; this avoids relying on the ephemeral filesystem used by serverless functions. Node.js 24 is selected so the current sanitized HTML dependency's ESM parser runs in the serverless runtime.
+The site is configured for Netlify in `netlify.toml`: Netlify installs dependencies with `npm ci` on Node.js 24, publishes the `public/` folder, and bundles the API function from `netlify/functions/`. The API function handles `/api/*` requests and stores documents in the site-wide Netlify Blobs store named `ajaia-documents`; this avoids relying on the ephemeral filesystem used by serverless functions. Server-side HTML sanitization uses a CommonJS-compatible package to behave consistently across local Express and Netlify Functions.
 
 To redeploy, connect the GitHub repository `suhail-khann/Document_Editor` to Netlify and use the `piush` branch. Keep the base directory at the repository root so Netlify can read `netlify.toml`, `package.json`, and the function source. Netlify Blobs must be available for the site. After deployment, check the deploy's Functions section and verify `https://<your-site>.netlify.app/api/users` returns the three demo users.
 
 If Netlify's **Build settings** UI has custom overrides, clear the base directory and let `netlify.toml` control the publish and functions directories. In **Build & deploy → Branches**, make sure the production branch is `piush`, then trigger a fresh deploy. A successful static publish should serve the home page; `/api/users` should return JSON rather than a 404. If either URL still returns 404, inspect the latest deploy log and confirm the deploy is using this repository and branch.
 
-If the page loads but `/api/users` returns a `502` mentioning `ERR_REQUIRE_ESM`, open **Site configuration → Environment variables** and set `AWS_LAMBDA_JS_RUNTIME` to `nodejs24.x` for the Functions scope (or remove an older override). Redeploy after changing it. The `sanitize-html` release used here requires Node.js 22.12 or newer; Node 24 is selected in `netlify.toml` for the build and function runtime.
+If the page loads but `/api/users` returns a `502`, inspect the Netlify Function logs for the current deploy and confirm the latest function bundle is deployed. The project sets `AWS_LAMBDA_JS_RUNTIME=nodejs24.x` in Netlify's environment variables; Netlify requires this runtime override to be managed through its UI, CLI, or API rather than `netlify.toml`.
 
 The Render Blueprint in `render.yaml` remains available for a standalone Node server, but Netlify should use the Netlify Function and Blobs path above.
 
