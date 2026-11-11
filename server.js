@@ -1,7 +1,8 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const express = require("express");
-const sanitizeHtml = require("./sanitize-content");
+const createSanitizer = require("./sanitize-content");
+const sanitizeHtml = createSanitizer(require("xss"));
 const {
   createDocumentService,
   createInitialDocuments,
